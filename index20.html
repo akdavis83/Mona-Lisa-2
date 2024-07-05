@@ -1,0 +1,140 @@
+<title>Mona Lisa 2</title>
+<link rel="icon" href="https://fav.farm/✅" />
+<style>
+	html,
+	body {
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		padding: 0;
+		background: #333;
+		touch-action: none;
+	}
+	#ui {
+		position: absolute !important;
+		top: 0;
+		left: 0;
+		color: white;
+	}
+	#ui,
+	#ui lume-element3d {
+		pointer-events: none;
+	}
+	#ui label {
+		pointer-events: auto;
+	}
+	lume-element3d {
+		padding: 15px;
+	}
+	.hidden {
+		display: none;
+	}
+</style>
+
+<base href="https://docs.lume.io/" />
+<script src="./importmap.js"></script>
+
+<lume-scene id="scene" perspective="800" webgl shadowmap-type="pcfsoft" class="hidden">
+	<lume-ambient-light color="white" intensity="0.4"></lume-ambient-light>
+
+	<lume-camera-rig active vertical-angle="30" distance="400" max-distance="7000" min-distance="100">
+		<lume-point-light
+			position="200 -200 200"
+			intensity="0.6"
+			color="white"
+			shadow-bias="-0.001"
+			shadow-map-width="2048"
+			shadow-map-height="2048"
+			slot="camera-child"
+		></lume-point-light>
+	</lume-camera-rig>
+
+	<lume-box
+		id="box"
+		has="projected-material"
+		texture-projectors="#projectedTexture"
+		sidedness="double"
+		cast-shadow="true"
+		receive-shadow="true"
+		opacity="1"
+		color="deeppink"
+		dithering
+		mount-point="0.5 0.5 0.5"
+		rotation="0 45 0"
+		size="100 100 100"
+		scale="1 1 1"
+	></lume-box>
+
+	<lume-element3d id="textureRotator">
+		<lume-element3d rotation="45 0 0">
+			<lume-texture-projector
+				id="projectedTexture"
+				size="150 150"
+				mount-point="0.5 0.5 0.5"
+				src="../images/monalisa-2.jpg"
+				fitment="contain"
+				visible="true"
+				position="0 0 150"
+				rotation="0 180 0"
+			>
+				<lume-box
+					id="visual"
+					opacity="0.5"
+					color="yellow"
+					size="1 1 500"
+					size-mode="proportional proportional"
+					cast-shadow="false"
+					receive-shadow="false"
+					visible="false"
+				>
+					<lume-sphere size="5" color="yellow" align-point="0.5 0.5"></lume-sphere>
+				</lume-box>
+			</lume-texture-projector>
+		</lume-element3d>
+	</lume-element3d>
+
+	<lume-plane
+		has="projected-material"
+		texture-projectors="#projectedTexture"
+		size="800 800"
+		color="cyan"
+		rotation="90"
+		position="0 150"
+		mount-point="0.5 0.5"
+	></lume-plane>
+</lume-scene>
+
+<lume-scene id="ui" class="hidden">
+	<lume-element3d size-mode="proportional literal" size="1 80">
+		<label>
+			Projected texture enabled on box:
+			<input
+				type="checkbox"
+				checked
+				onchange="box.getAttribute('texture-projectors') === 'none' ? box.setAttribute('texture-projectors', '#projectedTexture') : box.setAttribute('texture-projectors', 'none')"
+			/>
+		</label>
+		<br />
+		<label>
+			Fitment "cover" instead of "contain"
+			<input
+				type="checkbox"
+				onchange="projectedTexture.getAttribute('fitment') === 'contain' ? projectedTexture.setAttribute('fitment', 'cover') : projectedTexture.setAttribute('fitment', 'contain')"
+			/>
+		</label>
+		<br />
+		<label>
+			Visualize texture projector:
+			<input type="checkbox" onchange="visual.visible = !visual.visible" />
+		</label>
+	</lume-element3d>
+</lume-scene>
+
+<script type="module">
+	import 'lume'
+
+	scene.classList.remove('hidden')
+	ui.classList.remove('hidden')
+
+	textureRotator.rotation = (x, y, z) => [x, y + 0.1, z]
+</script>
